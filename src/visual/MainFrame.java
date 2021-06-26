@@ -13,10 +13,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import model.visualgraph.VisualNotDirectedGraph;
+import processing.HydroNet;
+
+import javax.swing.JTabbedPane;
+import java.awt.BorderLayout;
+
 public class MainFrame {
+	private JMenu archiveMenu;
 	private JFrame elFrame;
 	private JMenuBar laMenuBar;
-	private JMenu archiveMenu;
+	private JTabbedPane elTabPane;
+	private VisualNotDirectedGraph visualGraph;
 
 	
 	public static void main (String [] args) {
@@ -41,8 +49,11 @@ public class MainFrame {
 		elFrame = new JFrame ("Sistema de gestión de recursos hidráulicos");
 		
 		initMenus ();
+		initGraph ();
+		initTabs ();
 		
 		elFrame.setJMenuBar (laMenuBar);
+		elFrame.getContentPane().add (elTabPane, BorderLayout.CENTER);
 				
 		try {
 			UIManager.setLookAndFeel ("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -62,6 +73,7 @@ public class MainFrame {
 		laMenuBar = new JMenuBar ();
 		archiveMenu = new JMenu ("Archivo");
 		
+		archiveMenu.setMnemonic ('A');
 		laMenuBar.add (archiveMenu);
 		
 		initMenuItems ();
@@ -70,13 +82,30 @@ public class MainFrame {
 	private void initMenuItems () {
 		JMenuItem exitMItem = new JMenuItem ("Salir");
 		
+		exitMItem.setMnemonic ('S');
+		
 		exitMItem.addActionListener (new ActionListener () {
 			@Override
 			public void actionPerformed (ActionEvent actionEvent) {
-				elFrame.dispose ();
+				System.exit (0);
 			}
 		} );
 		
 		archiveMenu.add (exitMItem);
+	}
+	
+	private void initTabs () {
+		elTabPane = new JTabbedPane (JTabbedPane.BOTTOM);
+		
+		elTabPane.addTab ("Gráfico", null);
+		elTabPane.addTab ("Sumario", null);
+		
+		elTabPane.setComponentAt (0, visualGraph);
+	}
+	
+	private void initGraph () {
+		visualGraph = new VisualNotDirectedGraph (elFrame.getContentPane ().getWidth () / 2 + 550,
+												  elFrame.getContentPane ().getHeight () / 2 + 350);
+		visualGraph.setGraph (new HydroNet ().getHydroNet () );
 	}
  }
