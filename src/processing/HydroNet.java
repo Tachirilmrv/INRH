@@ -1,8 +1,12 @@
 package processing;
 
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import cu.edu.cujae.ceis.graph.LinkedGraph;
 import cu.edu.cujae.ceis.graph.interfaces.ILinkedNotDirectedGraph;
-
+import cu.edu.cujae.ceis.graph.vertex.Vertex;
 
 /**
  * Clase Red Hidráulica
@@ -10,15 +14,35 @@ import cu.edu.cujae.ceis.graph.interfaces.ILinkedNotDirectedGraph;
  * Inf. 22 #15 # 24
  **/
 
-
 public class HydroNet {
 	ILinkedNotDirectedGraph hydroNet;
 	
-	
 	public HydroNet () {
 		initHydroNet ();
-	}	
-	
+	}
+
+	public void reservoirsExahustion(){
+		Iterator<Vertex> iter = this.hydroNet.getVerticesList().iterator();
+
+		while(iter.hasNext()){
+			Vertex v = iter.next();
+			if(((Reservoir)v.getInfo()).getWaterLevel() < ((Reservoir)v.getInfo()).getMinCap()){
+				deleteRisk(v);
+			}
+		}
+	}
+
+
+	private void deleteRisk(Vertex v) {
+		LinkedList<Reservoir> reservoirs = new LinkedList<Reservoir>(); 
+
+		Iterator<Vertex> iterator = v.getAdjacents().iterator();
+		while (iterator.hasNext()) {
+			reservoirs.offer((Reservoir)iterator.next().getInfo());
+		}
+		
+		
+	}
 
 	public ILinkedNotDirectedGraph getHydroNet () {
 		return hydroNet;
@@ -29,7 +53,6 @@ public class HydroNet {
 		this.hydroNet = hydroNet;
 	}
 
-	
 	private void initHydroNet () {
 		hydroNet = new LinkedGraph ();
 		

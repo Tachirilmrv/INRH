@@ -6,7 +6,7 @@ package processing;
  * Inf. 22 #15 # 24
  **/
 
-public class Reservoir {
+public class Reservoir implements Comparable{
 	private String id;
 	private double maxCap;
 	private double minCap;
@@ -54,6 +54,10 @@ public class Reservoir {
 		this.waterLevel = waterLevel;
 	}
 
+	public double percentFill(){
+		return this.waterLevel/this.maxCap * 100;
+	}
+
 	
 	@Override
 	public boolean equals (Object obj) {
@@ -65,6 +69,13 @@ public class Reservoir {
 	@Override
 	public String toString () {
 		return getId ();
+	}
+
+
+	@Override
+	public int compareTo(Object o) {
+		Reservoir aux = (Reservoir) o;
+		return this.getWaterLevel() > aux.getWaterLevel() ? 1 : this.getWaterLevel() < aux.getWaterLevel() ? -1 : 0;
 	}
 }
 
