@@ -1,12 +1,14 @@
 package processing;
 
+import java.util.Comparator;
+
 /**
  * Clase Embalse
  * @author Jorge Miguel Haidar Martínez, Lázaro Michel Reyes Valdés
  * Inf. 22 #15 # 24
  **/
 
-public class Reservoir {
+public class Reservoir implements Comparable {
 	private String id;
 	private double maxCap;
 	private double minCap;
@@ -46,23 +48,34 @@ public class Reservoir {
 	}
 	
 
-	public void setId (String id) {
+	private void setId (String id) {
 		this.id = id;
 	}
 
-	public void setMaxCap (double maxCap) {
+	private void setMaxCap (double maxCap) {
 		this.maxCap = maxCap;
 	}
 
-	public void setMinCap (double minCap) {
+	private void setMinCap (double minCap) {
 		this.minCap = minCap;
 	}
 
-	public void setWaterLevel (double waterLevel) {
+	private void setWaterLevel (double waterLevel) {
 		this.waterLevel = waterLevel;
 	}
 
-	
+	public double getfillPercent(){
+		return this.waterLevel / this.maxCap * 100;
+	}
+
+	public double getAvaliableWater(){
+		return this.waterLevel - this.getMinCap();
+	}
+
+	public void transferWater(double volumeOfWater ){
+		this.waterLevel += volumeOfWater;
+	}
+
 	@Override
 	public boolean equals (Object obj) {
 		Reservoir reservoir = (Reservoir) obj;
@@ -74,6 +87,15 @@ public class Reservoir {
 	public String toString () {
 		return getId ();
 	}
+
+
+	@Override
+	public int compareTo(Object o) {
+		Reservoir r = (Reservoir) o;
+		return this.getfillPercent() > r.getfillPercent() ? 1 : this.getfillPercent() < r.getfillPercent() ? -1 : 0;;
+	}
+
+	
 }
 
 

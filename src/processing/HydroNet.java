@@ -1,9 +1,14 @@
 package processing;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
+
 import cu.edu.cujae.ceis.graph.LinkedGraph;
+import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.interfaces.ILinkedNotDirectedGraph;
+import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 
 
@@ -15,11 +20,12 @@ import cu.edu.cujae.ceis.graph.vertex.Vertex;
 
 
 public class HydroNet {
-	ILinkedNotDirectedGraph hydroNet;
+	ILinkedWeightedEdgeNotDirectedGraph hydroNet;
 	
 	
 	public HydroNet () {
 		initHydroNet ();
+		
 	}	
 	
 
@@ -28,7 +34,7 @@ public class HydroNet {
 	}
 	
 	
-	public void setHydroNet (ILinkedNotDirectedGraph hydroNet) {
+	public void setHydroNet (ILinkedWeightedEdgeNotDirectedGraph hydroNet) {
 		this.hydroNet = hydroNet;
 	}
 
@@ -126,15 +132,62 @@ public class HydroNet {
 		return overflodedReservoirs;
 	}
 
-	public void eliminateExhaustingRisk (Object selectedItem) {
+	public ArrayList<Transfer> eliminateExhaustingRisk (Object selectedItem) {
+		Vertex v = (Vertex) selectedItem;
 		Reservoir riskingReservoir = (Reservoir) selectedItem;
 		
-		//TODO
+		ArrayList<Reservoir> enlaces = new ArrayList<Reservoir>(v.getAdjacents().size());
+		enlaces.sort(null);
+
+		double temp = riskingReservoir.getMinCap() - riskingReservoir.getWaterLevel();
+
+		ArrayList<Transfer> transfer = new ArrayList<Transfer>(v.getAdjacents().size());
+
+		int i = 0;
+		while (temp > 0) {
+			if(temp > enlaces.get(i).getAvaliableWater()){
+				temp -= enlaces.get(i).getAvaliableWater();
+				transfer.add(new Transfer(enlaces.get(i), riskingReservoir, enlaces.get(i).getAvaliableWater(), Double.NaN ));
+			} else {
+				temp = 0;
+				transfer.add(new Transfer(enlaces.get(i), riskingReservoir, temp, Double.NaN));
+			}
+			i++;
+		}
+		return transfer;
 	}
 	
 	public void eliminateOverflowingRisk (Object selectedItem) {
 		Reservoir riskingReservoir = (Reservoir) selectedItem;
+
+		Vertex v = (Vertex) selectedItem;
 		
-		//TODO
+		ArrayList<Reservoir> enlaces = new ArrayList<Reservoir>(v.getAdjacents().size());
+		enlaces.sort(null);
+
+		double temp = riskingReservoir.getMinCap() - riskingReservoir.getWaterLevel();
+
+		ArrayList<Transfer> transfer = new ArrayList<Transfer>(v.getAdjacents().size());
+
+		
+
+		
+		
+	}
+
+	private Edge getPipe(Vertex from, Vertex to){
+		LinkedList<Edge> pipe = from.getEdgeList();
+
+		Iterator<Edge> iterator = pipe.iterator();
+		Edge result = null;
+
+		while(iterator.hasNext() && result == null){
+			Edge e = iterator.next();
+			if(e.getVertex() == to){
+				result = e;
+			}
+		}
+
+		return result;
 	}
 }

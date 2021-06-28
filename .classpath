@@ -6,7 +6,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/mnt/Datos/Lazarito/Escuela/2 año/1 semestre/Estructura de Datos/Bibliografia/Librerías de Java/Árboles y Grafos/3- Grafos Enlazados/libs/LinkedGraph_1.0.jar"/>
-	<classpathentry kind="lib" path="/mnt/Datos/Lazarito/Escuela/2 año/1 semestre/Estructura de Datos/Bibliografia/Librerías de Java/Árboles y Grafos/3- Grafos Enlazados/demos/MyILinkedNotDirectedGraphDemo_exec.jar"/>
+	<classpathentry kind="lib" path="lib/LinkedGraph_1.0.jar"/>
+	<classpathentry kind="lib" path="lib/MyILinkedNotDirectedGraphDemo_exec.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
