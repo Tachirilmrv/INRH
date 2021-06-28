@@ -36,7 +36,15 @@ public class Reservoir {
 	public double getWaterLevel () {
 		return waterLevel;
 	}
-
+	
+	public boolean isExhausted () {
+		return waterLevel < minCap;
+	}
+	
+	public boolean isOverfloded () {
+		return waterLevel > maxCap;
+	}
+	
 
 	public void setId (String id) {
 		this.id = id;
