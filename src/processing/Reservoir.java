@@ -1,7 +1,5 @@
 package processing;
 
-import java.util.Comparator;
-
 /**
  * Clase Embalse
  * @author Jorge Miguel Haidar Martínez, Lázaro Michel Reyes Valdés
@@ -63,17 +61,18 @@ public class Reservoir implements Comparable {
 	private void setWaterLevel (double waterLevel) {
 		this.waterLevel = waterLevel;
 	}
+	
 
-	public double getfillPercent(){
-		return this.waterLevel / this.maxCap * 100;
+	public double getfillPercent () {
+		return getWaterLevel () * 100 / getMaxCap ();
 	}
 
-	public double getAvaliableWater(){
-		return this.waterLevel - this.getMinCap();
+	public double getAvaliableWater (){
+		return getWaterLevel () - getMinCap ();
 	}
 
-	public void transferWater(double volumeOfWater ){
-		this.waterLevel += volumeOfWater;
+	public void transferWater (double volumeOfWater) {
+		setWaterLevel (getWaterLevel () + volumeOfWater);
 	}
 
 	@Override
@@ -90,12 +89,11 @@ public class Reservoir implements Comparable {
 
 
 	@Override
-	public int compareTo(Object o) {
-		Reservoir r = (Reservoir) o;
-		return this.getfillPercent() > r.getfillPercent() ? 1 : this.getfillPercent() < r.getfillPercent() ? -1 : 0;;
+	public int compareTo (Object obj) {
+		Reservoir r = (Reservoir) obj;
+		
+		return this.getfillPercent() > r.getfillPercent () ? 1 : this.getfillPercent () < r.getfillPercent() ? -1 : 0;
 	}
-
-	
 }
 
 

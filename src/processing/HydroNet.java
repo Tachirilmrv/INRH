@@ -104,63 +104,69 @@ public class HydroNet {
 		hydroNet.insertEdgeNDG (25, 26);
 	}
 
-	public LinkedList <Reservoir> getExhaustingReservoirs () {
-		LinkedList <Reservoir> exhaustedReservoirs = new LinkedList <> ();
+	public LinkedList <Vertex> getExhaustingReservoirs () {
+		LinkedList <Vertex> exhaustedReservoirs = new LinkedList <> ();
 		
 		for (Vertex vertex : hydroNet.getVerticesList () ) {
 			Reservoir r = (Reservoir) vertex.getInfo ();
 			
 			if (r.isExhausted () ) {
-				exhaustedReservoirs.add (r);
+				exhaustedReservoirs.add (vertex);
 			}
 		}
 		
 		return exhaustedReservoirs;
 	}
 	
-	public LinkedList <Reservoir> getOverflowingReservoirs () {
-		LinkedList <Reservoir> overflodedReservoirs = new LinkedList <> ();
+	public LinkedList <Vertex> getOverflowingReservoirs () {
+		LinkedList <Vertex> overflodedReservoirs = new LinkedList <> ();
 		
 		for (Vertex vertex : hydroNet.getVerticesList () ) {
 			Reservoir r = (Reservoir) vertex.getInfo ();
 			
 			if (r.isOverfloded () ) {
-				overflodedReservoirs.add (r);
+				overflodedReservoirs.add (vertex);
 			}
 		}
 		
 		return overflodedReservoirs;
 	}
 
-	public ArrayList<Transfer> eliminateExhaustingRisk (Object selectedItem) {
-		Vertex v = (Vertex) selectedItem;
-		Reservoir riskingReservoir = (Reservoir) selectedItem;
+	public ArrayList <Transfer> eliminateExhaustingRisk (Object selectedItem) {
+		Vertex vertex = (Vertex) selectedItem;
+		Reservoir riskingReservoir = (Reservoir) vertex.getInfo ();
+		LinkedList <Vertex> links = vertex.getAdjacents ();
+		LinkedList <Reservoir> reservoirs = new LinkedList <> ();
+		ArrayList <Transfer> transfers = new ArrayList <Transfer> (links.size () );
 		
-		ArrayList<Reservoir> enlaces = new ArrayList<Reservoir>(v.getAdjacents().size());
-		enlaces.sort(null);
-
-		double temp = riskingReservoir.getMinCap() - riskingReservoir.getWaterLevel();
-
-		ArrayList<Transfer> transfer = new ArrayList<Transfer>(v.getAdjacents().size());
-
-		int i = 0;
-		while (temp > 0) {
-			if(temp > enlaces.get(i).getAvaliableWater()){
-				temp -= enlaces.get(i).getAvaliableWater();
-				transfer.add(new Transfer(enlaces.get(i), riskingReservoir, enlaces.get(i).getAvaliableWater(), Double.NaN ));
-			} else {
-				temp = 0;
-				transfer.add(new Transfer(enlaces.get(i), riskingReservoir, temp, Double.NaN));
-			}
-			i++;
+		for (Vertex l : links) {
+			Reservoir r = (Reservoir) l.getInfo ();
+			
+			reservoirs.add (r);
 		}
-		return transfer;
+		
+		reservoirs.sort (null);
+
+		double diff = riskingReservoir.getMinCap () - riskingReservoir.getWaterLevel ();
+
+		for (int i = reservoirs.size () - 1; diff > 0 && i > 0; i--) {
+			if (diff > reservoirs.get (i).getAvaliableWater () ) {
+				diff -= reservoirs.get (i).getAvaliableWater ();
+				
+				transfers.add (new Transfer (reservoirs.get (i), riskingReservoir, reservoirs.get (i).getAvaliableWater (), Double.NaN) );
+			} else {				
+				transfers.add (new Transfer (reservoirs.get (i), riskingReservoir, diff, Double.NaN) );
+				
+				diff = 0;
+			}
+		}
+		
+		return transfers;
 	}
 	
 	public void eliminateOverflowingRisk (Object selectedItem) {
+		Vertex v = new Vertex (selectedItem);
 		Reservoir riskingReservoir = (Reservoir) selectedItem;
-
-		Vertex v = (Vertex) selectedItem;
 		
 		ArrayList<Reservoir> enlaces = new ArrayList<Reservoir>(v.getAdjacents().size());
 		enlaces.sort(null);
@@ -170,20 +176,18 @@ public class HydroNet {
 		ArrayList<Transfer> transfer = new ArrayList<Transfer>(v.getAdjacents().size());
 
 		
-
-		
-		
 	}
 
-	private Edge getPipe(Vertex from, Vertex to){
-		LinkedList<Edge> pipe = from.getEdgeList();
+	private Edge getPipe (Vertex from, Vertex to) {
+		LinkedList <Edge> pipe = from.getEdgeList ();
 
-		Iterator<Edge> iterator = pipe.iterator();
+		Iterator <Edge> iterator = pipe.iterator ();
 		Edge result = null;
 
-		while(iterator.hasNext() && result == null){
+		while (iterator.hasNext() && result == null) {
 			Edge e = iterator.next();
-			if(e.getVertex() == to){
+			
+			if (e.getVertex () == to){
 				result = e;
 			}
 		}

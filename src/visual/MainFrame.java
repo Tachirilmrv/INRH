@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,15 +15,18 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import model.visualgraph.VisualNotDirectedGraph;
 import processing.HydroNet;
 import processing.Reservoir;
+import processing.Transfer;
 
 public class MainFrame {
 	private JMenu riskMenu;
@@ -143,11 +147,11 @@ public class MainFrame {
 	}
 	
 	private void initExhaustingAction () {
-		Object [] exhaustingReservoirs = laHydroNet.getExhaustingReservoirs ().toArray ();
+		Vertex [] exhaustingReservoirs = laHydroNet.getExhaustingReservoirs ().toArray (new Vertex [laHydroNet.getExhaustingReservoirs ().size () ] );
 		Reservoir [] exhaustingArray = new Reservoir [exhaustingReservoirs.length];
 		
 		for (int i = 0; i < exhaustingReservoirs.length; i++) {
-			exhaustingArray [i] = (Reservoir) exhaustingReservoirs [i];
+			exhaustingArray [i] = (Reservoir) exhaustingReservoirs [i].getInfo ();
 		}
 		
 		JFrame exhaustingIFrame = new JFrame ("Buscar embalses en riesgo de agotamiento");
@@ -160,7 +164,22 @@ public class MainFrame {
 		exhaustingButton.addActionListener (new ActionListener() {	
 			@Override
 			public void actionPerformed (ActionEvent actionEvent) {
-				laHydroNet.eliminateExhaustingRisk (exhaustingCBox.getSelectedItem () );
+				ArrayList <Transfer> transList = laHydroNet.eliminateExhaustingRisk (exhaustingReservoirs [exhaustingCBox.getSelectedIndex () ] );
+				String message = "";
+				
+				if (!transList.isEmpty () ) { 					
+					for (int i = 0; i < transList.size (); i++) {
+						Transfer t = transList.get (i);
+						
+						message = String.format ("Transferencias sugeridas: \n"
+											   + "%d. %.2f m3 desde: %s", 
+												 i + 1, t.getVolumeOfWater (), t.getFrom () ) ;
+					}
+				} else {
+					message = "No hay disponibilidad en los embalses cercanos como para eliminar el riesgo";
+				}
+				
+				JOptionPane.showMessageDialog (exhaustingIFrame, message);
 			}
 		} );
 		
@@ -179,11 +198,11 @@ public class MainFrame {
 	}
 	
 	private void initOverflowingAction () {
-		Object [] overflowingReservoirs = laHydroNet.getOverflowingReservoirs ().toArray ();
+		Vertex [] overflowingReservoirs = laHydroNet.getOverflowingReservoirs ().toArray (new Vertex [laHydroNet.getOverflowingReservoirs ().size () ] );
 		Reservoir [] overflowingArray = new Reservoir [overflowingReservoirs.length];
 		
 		for (int i = 0; i < overflowingReservoirs.length; i++) {
-			overflowingArray [i] = (Reservoir) overflowingReservoirs [i];
+			overflowingArray [i] = (Reservoir) overflowingReservoirs [i].getInfo ();
 		}
 		
 		JFrame overflowingIFrame = new JFrame ("Buscar embalses en riesgo de desbordamiento");

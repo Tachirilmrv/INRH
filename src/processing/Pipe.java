@@ -1,5 +1,13 @@
 package processing;
 
+
+/**
+ * Clase Tubería
+ * @author Jorge Miguel Haidar Martínez, Lázaro Michel Reyes Valdés
+ * Inf. 22 #15 # 24
+ **/
+
+
 public class Pipe {
     
     private double length;
