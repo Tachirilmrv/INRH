@@ -172,7 +172,7 @@ public class MainFrame {
 						Transfer t = transList.get (i);
 						
 						message = String.format ("Transferencias sugeridas: \n"
-											   + "%d. %.2f m3 desde: %s", 
+											   + "%d) %.2f m3 desde: %s", 
 												 i + 1, t.getVolumeOfWater (), t.getFrom () ) ;
 					}
 				} else {
