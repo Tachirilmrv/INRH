@@ -1,11 +1,12 @@
 package visual;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -17,40 +18,33 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.table.DefaultTableModel;
 
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 import model.visualgraph.VisualNotDirectedGraph;
 import processing.HydroNet;
 import processing.Reservoir;
 import processing.Transfer;
+import init.INRH;
 
 public class MainFrame {
 	private JMenu riskMenu;
 	private JMenu archiveMenu;
 	private JFrame elFrame;
+	private JTable laTable;
+	private JPanel tablePanel;
 	private JMenuBar laMenuBar;
-	private HydroNet laHydroNet;
 	private JTabbedPane elTabPane;
+	private DefaultTableModel elDefaultTMod;
 	private VisualNotDirectedGraph visualGraph;
 
 	
-	public static void main (String [] args) {
-		EventQueue.invokeLater (new Runnable () {
-			public void run () {
-				try {
-					MainFrame window = new MainFrame ();
-				} catch (Exception exception) {
-					exception.printStackTrace ();
-				}
-			}
-		} );
-	}
-
-
 	public MainFrame () {
 		initMainFrame ();
 	}
@@ -61,6 +55,7 @@ public class MainFrame {
 		
 		initMenus ();
 		initGraph ();
+		initTable ();
 		initTabs ();
 		
 		elFrame.setJMenuBar (laMenuBar);
@@ -136,18 +131,60 @@ public class MainFrame {
 		elTabPane.addTab ("Sumario", null);
 		
 		elTabPane.setComponentAt (0, visualGraph);
+		elTabPane.setComponentAt (1, tablePanel);
 	}
 	
 	private void initGraph () {
-		laHydroNet = new HydroNet ();
+		INRH.getInstance ().setHydroNet (new HydroNet () );
 		visualGraph = new VisualNotDirectedGraph (elFrame.getContentPane ().getWidth () / 2 + 550,
 												  elFrame.getContentPane ().getHeight () / 2 + 350);
 		
-		visualGraph.setGraph (laHydroNet.getHydroNet () );
+		visualGraph.setGraph (INRH.getInstance ().getHydroNet ().getHydroNet () );
 	}
 	
+	private void initTable () {
+		elDefaultTMod = new DefaultTableModel () {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isCellEditable (int row, int column) {
+				return false;
+			}
+		};	
+		tablePanel = new JPanel ();
+		laTable = new JTable (elDefaultTMod);
+		
+		
+		fillTable ();
+		
+		
+		tablePanel.setLayout (new CardLayout () );
+		tablePanel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createTitledBorder ("Sumario de embalses") ) );
+		
+		tablePanel.add (new JScrollPane (laTable) );
+	}
+	
+	private void fillTable () {
+		LinkedList <Vertex> vert = INRH.getInstance ().getHydroNet ().getHydroNet ().getVerticesList ();
+
+		elDefaultTMod.addColumn ("Embalse");
+		elDefaultTMod.addColumn ("Capacidad Mínima");
+		elDefaultTMod.addColumn ("Capacidad Máxima");
+		elDefaultTMod.addColumn ("Nivel de agua");
+		elDefaultTMod.addColumn ("Porciento de llenado");
+		
+		elDefaultTMod.setRowCount (0);
+		
+		for (Vertex v: vert) {
+			Reservoir r = (Reservoir) v.getInfo ();
+			
+			elDefaultTMod.addRow (new Object [] {r.getId (), r.getMinCap (), r.getMaxCap (),
+												 r.getWaterLevel (), String.format ("%.2f%c", r.getfillPercent (), '%' ) } );
+		}
+	}
+ 	
 	private void initExhaustingAction () {
-		Vertex [] exhaustingReservoirs = laHydroNet.getExhaustingReservoirs ().toArray (new Vertex [laHydroNet.getExhaustingReservoirs ().size () ] );
+		Vertex [] exhaustingReservoirs = INRH.getInstance ().getHydroNet ().getExhaustingReservoirs ().toArray (new Vertex [INRH.getInstance ().getHydroNet ().getExhaustingReservoirs ().size () ] );
 		Reservoir [] exhaustingArray = new Reservoir [exhaustingReservoirs.length];
 		
 		for (int i = 0; i < exhaustingReservoirs.length; i++) {
@@ -164,7 +201,7 @@ public class MainFrame {
 		exhaustingButton.addActionListener (new ActionListener() {	
 			@Override
 			public void actionPerformed (ActionEvent actionEvent) {
-				ArrayList <Transfer> transList = laHydroNet.eliminateExhaustingRisk (exhaustingReservoirs [exhaustingCBox.getSelectedIndex () ] );
+				ArrayList <Transfer> transList = INRH.getInstance ().getHydroNet ().eliminateExhaustingRisk (exhaustingReservoirs [exhaustingCBox.getSelectedIndex () ] );
 				String message = "";
 				
 				if (!transList.isEmpty () ) { 					
@@ -198,7 +235,7 @@ public class MainFrame {
 	}
 	
 	private void initOverflowingAction () {
-		Vertex [] overflowingReservoirs = laHydroNet.getOverflowingReservoirs ().toArray (new Vertex [laHydroNet.getOverflowingReservoirs ().size () ] );
+		Vertex [] overflowingReservoirs = INRH.getInstance ().getHydroNet ().getOverflowingReservoirs ().toArray (new Vertex [INRH.getInstance ().getHydroNet ().getOverflowingReservoirs ().size () ] );
 		Reservoir [] overflowingArray = new Reservoir [overflowingReservoirs.length];
 		
 		for (int i = 0; i < overflowingReservoirs.length; i++) {
@@ -215,7 +252,7 @@ public class MainFrame {
 		overflowingButton.addActionListener (new ActionListener() {	
 			@Override
 			public void actionPerformed (ActionEvent actionEvent) {
-				laHydroNet.eliminateOverflowingRisk (overflowingCBox.getSelectedItem () );
+				INRH.getInstance ().getHydroNet ().eliminateOverflowingRisk (overflowingCBox.getSelectedItem () );
 			}
 		} );
 	

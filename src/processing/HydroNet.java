@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import cu.edu.cujae.ceis.graph.LinkedGraph;
 import cu.edu.cujae.ceis.graph.edge.Edge;
 import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
-import cu.edu.cujae.ceis.graph.interfaces.ILinkedNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
 
@@ -28,7 +27,7 @@ public class HydroNet {
 	}	
 	
 
-	public ILinkedNotDirectedGraph getHydroNet () {
+	public ILinkedWeightedEdgeNotDirectedGraph getHydroNet () {
 		return hydroNet;
 	}
 	
