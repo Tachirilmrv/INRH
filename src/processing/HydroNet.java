@@ -7,6 +7,7 @@ import java.util.LinkedList;
 
 import cu.edu.cujae.ceis.graph.LinkedGraph;
 import cu.edu.cujae.ceis.graph.edge.Edge;
+import cu.edu.cujae.ceis.graph.edge.WeightedEdge;
 import cu.edu.cujae.ceis.graph.interfaces.ILinkedNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.interfaces.ILinkedWeightedEdgeNotDirectedGraph;
 import cu.edu.cujae.ceis.graph.vertex.Vertex;
@@ -161,34 +162,47 @@ public class HydroNet {
 		return transfers;
 	}
 	
-	public void eliminateOverflowingRisk (Object selectedItem) {
+	public ArrayList<Transfer> eliminateOverflowingRisk (Object selectedItem) {
 		Vertex v = new Vertex (selectedItem);
 		Reservoir riskingReservoir = (Reservoir) selectedItem;
 		
-		ArrayList<Reservoir> enlaces = new ArrayList<Reservoir>(v.getAdjacents().size());
-		enlaces.sort(null);
+		ArrayList<Reservoir> reservoirs = new ArrayList<Reservoir>(v.getAdjacents().size());
+		reservoirs.sort(null);
 
-		double temp = riskingReservoir.getMinCap() - riskingReservoir.getWaterLevel();
+		ArrayList<Transfer> transfers = new ArrayList<Transfer>(v.getAdjacents().size());
 
-		ArrayList<Transfer> transfer = new ArrayList<Transfer>(v.getAdjacents().size());
+		double volumeOfWater = riskingReservoir.getWaterLevel() - (0.98 * riskingReservoir.getMaxCap());
 
-		
-	}
-
-	private Edge getPipe (Vertex from, Vertex to) {
-		LinkedList <Edge> pipe = from.getEdgeList ();
-
-		Iterator <Edge> iterator = pipe.iterator ();
-		Edge result = null;
-
-		while (iterator.hasNext() && result == null) {
-			Edge e = iterator.next();
-			
-			if (e.getVertex () == to){
-				result = e;
+		for (int i = 0; volumeOfWater > 0 && i > 0; i++) {
+			double volumeCanAssimilate = 0.90 * reservoirs.get (i).getMaxCap() - reservoirs.get(i).getWaterLevel();
+			Pipe p = (Pipe) getPipe(v, reservoirs.get(i)).getWeight();
+			if (volumeOfWater > volumeCanAssimilate) {
+				volumeOfWater -= volumeCanAssimilate;
+				transfers.add (new Transfer (riskingReservoir, reservoirs.get (i), volumeCanAssimilate, p.getRequiredTime() * volumeCanAssimilate));
+			} else {				
+				transfers.add (new Transfer (riskingReservoir, reservoirs.get (i), volumeCanAssimilate, p.getRequiredTime() * volumeCanAssimilate) );
+				volumeOfWater= 0;
 			}
 		}
 
-		return result;
+		return transfers;
 	}
+
+	private WeightedEdge getPipe (Vertex from, Reservoir to) {
+		LinkedList <Edge> pipe = from.getEdgeList();
+
+		Iterator <Edge> iterator = pipe.iterator ();
+		Edge result = null;
+		
+		while (iterator.hasNext() && result == null) {
+			Edge e = iterator.next();
+			
+			if (e.getVertex ().getInfo() == to){
+				result = e;
+			}
+		}
+		return (WeightedEdge) result;
+	}
+
+	
 }
