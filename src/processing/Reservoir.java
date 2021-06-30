@@ -6,7 +6,7 @@ package processing;
  * Inf. 22 #15 # 24
  **/
 
-public class Reservoir implements Comparable {
+public class Reservoir implements Comparable<Reservoir> {
 	private String id;
 	private double maxCap;
 	private double minCap;
@@ -87,11 +87,8 @@ public class Reservoir implements Comparable {
 		return getId ();
 	}
 
-
 	@Override
-	public int compareTo (Object obj) {
-		Reservoir r = (Reservoir) obj;
-		
+	public int compareTo(Reservoir r) {
 		return this.getfillPercent() > r.getfillPercent () ? 1 : this.getfillPercent () < r.getfillPercent() ? -1 : 0;
 	}
 }
