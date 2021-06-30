@@ -6,7 +6,7 @@ package processing;
  * Inf. 22 #15 # 24
  **/
 
-public class Reservoir implements Comparable{
+public class Reservoir implements Comparable {
 	private String id;
 	private double maxCap;
 	private double minCap;
@@ -36,29 +36,45 @@ public class Reservoir implements Comparable{
 	public double getWaterLevel () {
 		return waterLevel;
 	}
+	
+	public boolean isExhausted () {
+		return waterLevel < minCap;
+	}
+	
+	public boolean isOverfloded () {
+		return waterLevel > maxCap;
+	}
+	
 
-
-	public void setId (String id) {
+	private void setId (String id) {
 		this.id = id;
 	}
 
-	public void setMaxCap (double maxCap) {
+	private void setMaxCap (double maxCap) {
 		this.maxCap = maxCap;
 	}
 
-	public void setMinCap (double minCap) {
+	private void setMinCap (double minCap) {
 		this.minCap = minCap;
 	}
 
-	public void setWaterLevel (double waterLevel) {
+	private void setWaterLevel (double waterLevel) {
 		this.waterLevel = waterLevel;
 	}
+	
 
-	public double percentFill(){
-		return this.waterLevel/this.maxCap * 100;
+	public double getfillPercent () {
+		return getWaterLevel () * 100 / getMaxCap ();
 	}
 
-	
+	public double getAvaliableWater (){
+		return getWaterLevel () - getMinCap ();
+	}
+
+	public void transferWater (double volumeOfWater) {
+		setWaterLevel (getWaterLevel () + volumeOfWater);
+	}
+
 	@Override
 	public boolean equals (Object obj) {
 		Reservoir reservoir = (Reservoir) obj;
@@ -73,9 +89,10 @@ public class Reservoir implements Comparable{
 
 
 	@Override
-	public int compareTo(Object o) {
-		Reservoir aux = (Reservoir) o;
-		return this.getWaterLevel() > aux.getWaterLevel() ? 1 : this.getWaterLevel() < aux.getWaterLevel() ? -1 : 0;
+	public int compareTo (Object obj) {
+		Reservoir r = (Reservoir) obj;
+		
+		return this.getfillPercent() > r.getfillPercent () ? 1 : this.getfillPercent () < r.getfillPercent() ? -1 : 0;
 	}
 }
 
