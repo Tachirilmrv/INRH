@@ -172,7 +172,7 @@ public class HydroNet {
 
 		double volumeOfWater = riskingReservoir.getWaterLevel() - (0.98 * riskingReservoir.getMaxCap());
 
-		for (int i = 0; volumeOfWater > 0 && i > 0; i++) {
+		for (int i = 0; volumeOfWater > 0 && i < reservoirs.size(); i++) {
 			double volumeCanAssimilate = 0.90 * reservoirs.get (i).getMaxCap() - reservoirs.get(i).getWaterLevel();
 			Pipe p = (Pipe) getPipe(v, reservoirs.get(i)).getWeight();
 			if (volumeOfWater > volumeCanAssimilate) {
