@@ -9,46 +9,41 @@ package processing;
 
 
 public class Pipe {
-    
     private double length;
     private double radio;
     private double requiredTime; //en segundos
     
-    public Pipe(double length, double radio, double requiredTime) {
-        this.setLength(length);
-        this.setRadio(radio);
-        this.setRequiredTime(requiredTime);
+    public Pipe (double length, double radio, double requiredTime) {
+        this.setLength (length);
+        this.setRadio (radio);
+        this.setRequiredTime (requiredTime);
     }
 
-    public double getLength() {
+    public double getLength () {
         return length;
     }
 
-    private void setLength(double length) {
+    private void setLength (double length) {
         this.length = length;
     }
 
-    public double getRadio() {
+    public double getRadio () {
         return radio;
     }
 
-    private void setRadio(double radio) {
+    private void setRadio (double radio) {
         this.radio = radio;
     }
 
-    public double getRequiredTime() {
+    public double getRequiredTime () {
         return requiredTime;
     }
 
-    private void setRequiredTime(double requiredTime) {
+    private void setRequiredTime (double requiredTime) {
         this.requiredTime = requiredTime;
     }
 
-    public double getTransferRequiredTime(double volumeOfWater){
+    public double getTransferRequiredTime (double volumeOfWater){
         return this.requiredTime * volumeOfWater;
     }
-
-
-
-
 }

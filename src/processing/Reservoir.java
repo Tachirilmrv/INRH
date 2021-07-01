@@ -42,7 +42,7 @@ public class Reservoir implements Comparable<Reservoir> {
 	}
 	
 	public boolean isOverfloded () {
-		return waterLevel > maxCap;
+		return getWaterLevel () > 0.98 * maxCap;
 	}
 	
 

@@ -209,7 +209,7 @@ public class MainFrame {
 						Transfer t = transList.get (i);
 						
 						message = String.format ("Transferencias sugeridas: \n"
-											   + "%d) %.2f m3 desde: %s", 
+											   + "%d) %.2f m3 desde %s", 
 												 i + 1, t.getVolumeOfWater (), t.getFrom () ) ;
 					}
 				} else {
@@ -252,7 +252,22 @@ public class MainFrame {
 		overflowingButton.addActionListener (new ActionListener() {	
 			@Override
 			public void actionPerformed (ActionEvent actionEvent) {
-				INRH.getInstance ().getHydroNet ().eliminateOverflowingRisk (overflowingCBox.getSelectedItem () );
+				ArrayList <Transfer> transList = INRH.getInstance ().getHydroNet ().eliminateOverflowingRisk (overflowingReservoirs [overflowingCBox.getSelectedIndex () ] );
+				String message = "";
+				
+				if (!transList.isEmpty () ) { 					
+					for (int i = 0; i < transList.size (); i++) {
+						Transfer t = transList.get (i);
+						
+						message = String.format ("Transferencias sugeridas: \n"
+											   + "%d) %.2f m3 hacia %s en un tiempo aproximado de %.2f minutos", 
+												 i + 1, t.getVolumeOfWater (), t.getTo (),  t.getTransferRequiredTime () / 60) ;
+					}
+				} else {
+					message = "No hay disponibilidad en los embalses cercanos como para eliminar el riesgo";
+				}
+				
+				JOptionPane.showMessageDialog (overflowingIFrame, message);
 			}
 		} );
 	

@@ -22,7 +22,7 @@ public class INRH {
 		EventQueue.invokeLater (new Runnable () {
 			public void run () {
 				try {
-					MainFrame window = new MainFrame ();
+					 new MainFrame ();
 				} catch (Exception exception) {
 					exception.printStackTrace ();
 				}

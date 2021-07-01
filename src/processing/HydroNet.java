@@ -1,7 +1,6 @@
 package processing;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 
@@ -67,38 +66,38 @@ public class HydroNet {
 		hydroNet.insertVertex (new Reservoir ("Siguaney", 160913, 22759, 75085) );
 		hydroNet.insertVertex (new Reservoir ("El Nispero", 633208, 1103, 6733) );
 		
-		hydroNet.insertEdgeNDG (0, 1);
-		hydroNet.insertEdgeNDG (0, 2);
-		hydroNet.insertEdgeNDG (1, 2);
-		hydroNet.insertEdgeNDG (2, 3);
-		hydroNet.insertEdgeNDG (3, 4);
-		hydroNet.insertEdgeNDG (4, 5);
-		hydroNet.insertEdgeNDG (5, 6);
-		hydroNet.insertEdgeNDG (5, 7);
-		hydroNet.insertEdgeNDG (6, 7);
-		hydroNet.insertEdgeNDG (6, 8);
-		hydroNet.insertEdgeNDG (7, 8);
-		hydroNet.insertEdgeNDG (7, 9);
-		hydroNet.insertEdgeNDG (8, 9);
-		hydroNet.insertEdgeNDG (8, 10);
-		hydroNet.insertEdgeNDG (9, 10);
-		hydroNet.insertEdgeNDG (10, 11);
-		hydroNet.insertEdgeNDG (11, 12);
-		hydroNet.insertEdgeNDG (12, 13);
-		hydroNet.insertEdgeNDG (12, 14);	
-		hydroNet.insertEdgeNDG (14, 15);
-		hydroNet.insertEdgeNDG (15, 16);
-		hydroNet.insertEdgeNDG (15, 18);
-		hydroNet.insertEdgeNDG (15, 19);
-		hydroNet.insertEdgeNDG (16, 17);
-		hydroNet.insertEdgeNDG (19, 20);
-		hydroNet.insertEdgeNDG (20, 21);
-		hydroNet.insertEdgeNDG (21, 22);
-		hydroNet.insertEdgeNDG (22, 23);
-		hydroNet.insertEdgeNDG (23, 24);
-		hydroNet.insertEdgeNDG (23, 25);
-		hydroNet.insertEdgeNDG (24, 25);
-		hydroNet.insertEdgeNDG (25, 26);
+		hydroNet.insertWEdgeNDG (0, 1, new Pipe (24882, 2, 12481) );
+		hydroNet.insertWEdgeNDG (0, 2, new Pipe (38047, 1, 38047) );
+		hydroNet.insertWEdgeNDG (1, 2, new Pipe (26499, 1, 26499) );
+		hydroNet.insertWEdgeNDG (2, 3, new Pipe (48291, 3, 16097) );
+		hydroNet.insertWEdgeNDG (3, 4, new Pipe (91942, 3, 30647.3) );
+		hydroNet.insertWEdgeNDG (4, 5, new Pipe (91593, 5, 18318.6) );
+		hydroNet.insertWEdgeNDG (5, 6, new Pipe (86706, 2, 43353) );
+		hydroNet.insertWEdgeNDG (5, 7, new Pipe (96180, 2, 48090) );
+		hydroNet.insertWEdgeNDG (6, 7, new Pipe (18526, 2, 9263) );
+		hydroNet.insertWEdgeNDG (6, 8, new Pipe (1586, 3, 528.6) );
+		hydroNet.insertWEdgeNDG (7, 8, new Pipe (29104, 2, 14552) );
+		hydroNet.insertWEdgeNDG (7, 9, new Pipe (23535, 3, 7845) );
+		hydroNet.insertWEdgeNDG (8, 9, new Pipe (41485, 4, 10371.2) );
+		hydroNet.insertWEdgeNDG (8, 10, new Pipe (707, 2, 353.5) );
+		hydroNet.insertWEdgeNDG (9, 10, new Pipe (60998, 2, 30499) );
+		hydroNet.insertWEdgeNDG (10, 11, new Pipe (81271, 2, 40635.5) );
+		hydroNet.insertWEdgeNDG (11, 12, new Pipe (75013, 4, 18753.2) );
+		hydroNet.insertWEdgeNDG (12, 13, new Pipe (8703, 2, 4351.5) );
+		hydroNet.insertWEdgeNDG (12, 14, new Pipe (73457, 4, 18364.2) );	
+		hydroNet.insertWEdgeNDG (14, 15, new Pipe (83979, 3, 27993) );
+		hydroNet.insertWEdgeNDG (15, 16, new Pipe (19773, 5, 3945.6) );
+		hydroNet.insertWEdgeNDG (15, 18, new Pipe (15081, 2, 7540.5) );
+		hydroNet.insertWEdgeNDG (15, 19, new Pipe (38162, 1, 38162) );
+		hydroNet.insertWEdgeNDG (16, 17, new Pipe (21312, 3, 7104) );
+		hydroNet.insertWEdgeNDG (19, 20, new Pipe (10654, 1, 10654) );
+		hydroNet.insertWEdgeNDG (20, 21, new Pipe (52837, 3, 17612.3) );
+		hydroNet.insertWEdgeNDG (21, 22, new Pipe (77746, 2, 38873) );
+		hydroNet.insertWEdgeNDG (22, 23, new Pipe (70063, 3, 23354.3) );
+		hydroNet.insertWEdgeNDG (23, 24, new Pipe (87185, 1, 87185) );
+		hydroNet.insertWEdgeNDG (23, 25, new Pipe (85000, 1, 85000) );
+		hydroNet.insertWEdgeNDG (24, 25, new Pipe (39368, 4, 9842) );
+		hydroNet.insertWEdgeNDG (25, 26, new Pipe (11721, 4, 2930.2) );
 	}
 
 	public LinkedList <Vertex> getExhaustingReservoirs () {
@@ -147,61 +146,78 @@ public class HydroNet {
 		double diff = riskingReservoir.getMinCap () - riskingReservoir.getWaterLevel ();
 
 		for (int i = reservoirs.size () - 1; diff > 0 && i > 0; i--) {
-			if (diff > reservoirs.get (i).getAvaliableWater () ) {
-				diff -= reservoirs.get (i).getAvaliableWater ();
-				
-				transfers.add (new Transfer (reservoirs.get (i), riskingReservoir, reservoirs.get (i).getAvaliableWater (), Double.NaN) );
-			} else {				
-				transfers.add (new Transfer (reservoirs.get (i), riskingReservoir, diff, Double.NaN) );
-				
-				diff = 0;
-			}
-		}
-		
-		return transfers;
-	}
-	
-	public ArrayList<Transfer> eliminateOverflowingRisk (Object selectedItem) {
-		Vertex v = new Vertex (selectedItem);
-		Reservoir riskingReservoir = (Reservoir) selectedItem;
-		
-		ArrayList<Reservoir> reservoirs = new ArrayList<Reservoir>(v.getAdjacents().size());
-		reservoirs.sort(null);
-
-		ArrayList<Transfer> transfers = new ArrayList<Transfer>(v.getAdjacents().size());
-
-		double volumeOfWater = riskingReservoir.getWaterLevel() - (0.98 * riskingReservoir.getMaxCap());
-
-		for (int i = 0; volumeOfWater > 0 && i > 0; i++) {
-			double volumeCanAssimilate = 0.90 * reservoirs.get (i).getMaxCap() - reservoirs.get(i).getWaterLevel();
-			Pipe p = (Pipe) getPipe(v, reservoirs.get(i)).getWeight();
-			if (volumeOfWater > volumeCanAssimilate) {
-				volumeOfWater -= volumeCanAssimilate;
-				transfers.add (new Transfer (riskingReservoir, reservoirs.get (i), volumeCanAssimilate, p.getRequiredTime() * volumeCanAssimilate));
-			} else {				
-				transfers.add (new Transfer (riskingReservoir, reservoirs.get (i), volumeCanAssimilate, p.getRequiredTime() * volumeCanAssimilate) );
-				volumeOfWater= 0;
-			}
-		}
-
-		return transfers;
-	}
-
-	private WeightedEdge getPipe (Vertex from, Reservoir to) {
-		LinkedList <Edge> pipe = from.getEdgeList();
-
-		Iterator <Edge> iterator = pipe.iterator ();
-		Edge result = null;
-		
-		while (iterator.hasNext() && result == null) {
-			Edge e = iterator.next();
+			double availableWater = reservoirs.get (i).getAvaliableWater ();
 			
-			if (e.getVertex ().getInfo() == to){
-				result = e;
+			if (availableWater > 0) {
+				if (diff > availableWater) {
+					diff -= reservoirs.get (i).getAvaliableWater ();
+					
+					transfers.add (new Transfer (reservoirs.get (i), riskingReservoir, reservoirs.get (i).getAvaliableWater (), Double.NaN) );
+				} else {				
+					transfers.add (new Transfer (reservoirs.get (i), riskingReservoir, diff, Double.NaN) );
+					
+					diff = 0;
+				}
 			}
 		}
-		return (WeightedEdge) result;
+		
+		return transfers;
+	}
+	
+	public ArrayList <Transfer> eliminateOverflowingRisk (Object selectedItem) {
+		Vertex vertex = (Vertex) selectedItem;
+		Reservoir riskingReservoir = (Reservoir) vertex.getInfo ();
+		LinkedList <Vertex> links = vertex.getAdjacents ();
+		LinkedList <Reservoir> reservoirs = new LinkedList <> ();
+		ArrayList <Transfer> transfers = new ArrayList <Transfer> (links.size () );
+		
+		for (Vertex l : links) {
+			Reservoir r = (Reservoir) l.getInfo ();
+			
+			reservoirs.add (r);
+		}
+		
+		reservoirs.sort (null);
+
+		double volumeOfWater = riskingReservoir.getWaterLevel () - (0.95 * riskingReservoir.getMaxCap () );
+
+		for (int i = 0; volumeOfWater > 0 && i < links.size (); i++) {
+			double volumeCanAssimilate = 0.90 * reservoirs.get (i).getMaxCap () - reservoirs.get (i).getWaterLevel ();
+			Pipe p = getPipe (vertex, links.get (i) );
+			
+			if (volumeCanAssimilate > 0) {
+				if (volumeOfWater > volumeCanAssimilate && volumeCanAssimilate > 0) {
+					volumeOfWater -= volumeCanAssimilate;
+
+					transfers.add (new Transfer (riskingReservoir, reservoirs.get (i), volumeCanAssimilate, p.getRequiredTime () * volumeCanAssimilate / 10000) );
+				} else if (volumeOfWater <= volumeCanAssimilate && volumeCanAssimilate > 0) {				
+					transfers.add (new Transfer (riskingReservoir, reservoirs.get (i), volumeCanAssimilate, p.getRequiredTime () * volumeCanAssimilate / 10000) );
+
+					volumeOfWater = 0;
+				}
+			}
+		}
+
+		return transfers;
 	}
 
-	
+	private Pipe getPipe (Vertex from, Vertex to) {
+		LinkedList <Edge> toPipes = to.getEdgeList ();
+		Reservoir fromR = (Reservoir) from.getInfo ();
+		Pipe result = null;
+		
+		for (int i = 0; i < toPipes.size (); i++) {
+			WeightedEdge toWe = (WeightedEdge) toPipes.get (i);
+			Reservoir toR = (Reservoir) toWe.getVertex ().getInfo ();
+			
+			if (fromR.equals (toR) ) {
+				WeightedEdge we = (WeightedEdge) toPipes.get (i);
+				result = (Pipe) we.getWeight ();
+				
+				break;
+			}
+		}
+		
+		return result;
+	}
 }
